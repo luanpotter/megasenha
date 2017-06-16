@@ -3,6 +3,7 @@ package xyz.luan.games;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.*;
 
 public class WordsService {
@@ -11,7 +12,7 @@ public class WordsService {
     private static final Random RANDOM = new Random();
 
     static {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(WordsService.class.getResourceAsStream("/words.db")))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(WordsService.class.getResourceAsStream("/words.db"), Charset.forName("UTF-8")))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(" ");
