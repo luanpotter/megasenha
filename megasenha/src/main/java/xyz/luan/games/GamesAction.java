@@ -19,8 +19,6 @@ public class GamesAction extends Action<Game> {
         probs.add(new AbstractMap.SimpleEntry<>("v.", 8));
         probs.add(new AbstractMap.SimpleEntry<>("adj.", 8));
         probs.add(new AbstractMap.SimpleEntry<>("adv.", 4));
-        probs.add(new AbstractMap.SimpleEntry<>("pron.", 4));
-        probs.add(new AbstractMap.SimpleEntry<>("num.", 1));
     }
 
     private static final Integer SUM;
