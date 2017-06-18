@@ -91,3 +91,4 @@ with open('megasenha.db', 'w') as wfile:
 	for word, category in sorted(words.items()):
 		if (word != '' and category != ''):
 			wfile.write(word + ' ' + category + '\n')
+			
