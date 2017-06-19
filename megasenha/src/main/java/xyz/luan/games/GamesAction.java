@@ -15,10 +15,12 @@ public class GamesAction extends Action<Game> {
     private static final List<Map.Entry<String, Integer>> probs = new ArrayList<>();
 
     static {
-        probs.add(new AbstractMap.SimpleEntry<>("s.", 16));
+        probs.add(new AbstractMap.SimpleEntry<>("s.", 14));
         probs.add(new AbstractMap.SimpleEntry<>("v.", 8));
-        probs.add(new AbstractMap.SimpleEntry<>("adj.", 8));
+        probs.add(new AbstractMap.SimpleEntry<>("adj.", 7));
         probs.add(new AbstractMap.SimpleEntry<>("adv.", 4));
+        probs.add(new AbstractMap.SimpleEntry<>("pron.", 3));
+        probs.add(new AbstractMap.SimpleEntry<>("num.", 2));
     }
 
     private static final Integer SUM;
