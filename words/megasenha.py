@@ -1,4 +1,5 @@
 import httplib2
+from time import sleep
 from pyquery import PyQuery
 from joblib import Parallel, delayed
 
@@ -25,9 +26,14 @@ def is_ban_strong(w):
 
 def process_word(w):
 	w = w.lower()
-	if (len(w) < 2):
+	if (len(w) < 2) or (' ' in w) or ('-' in w):
 		return ('', '')
-	resp, content = httplib2.Http().request('https://www.priberam.pt/dlpo/' + w)
+	while True:
+		try:
+			resp, content = httplib2.Http().request('https://www.priberam.pt/dlpo/' + w)
+			break
+		except Exception:
+			sleep(0.5)
 	if 'Palavra n\\xc3\\xa3o encontrada.' not in str(content):
 		pq = PyQuery(content)
 
@@ -35,13 +41,16 @@ def process_word(w):
 		words = []
 		for tag in tags:
 			children = tag.children()
-			if (children.size() == 1 and children.eq(0).is_('b') and children.eq(0).children().size() == 0):
+			if (children.size() == 1) and children.eq(0).is_('b') and (children.eq(0).children().size() == 0):
 				words.append(tag)
 
 		wordsEquals = []
 		wordsSimilar = []
+
 		for w0 in words:
-			if w0.text() == w:
+			if (' ' in w0.text()) or ('-' in w0.text()):
+				continue
+			elif w0.text() == w:
 				wordsEquals.append(w0)
 			else:
 				wordsSimilar.append(w0)
@@ -54,13 +63,13 @@ def process_word(w):
 			cs = word_parents.eq(word_parents.size() - 1).find('em')
 			for i in range(0, cs.size()):
 				c = cs.eq(i).text().split(' ')[0]
-				if (is_ban_strong(c)):
+				if is_ban_strong(c):
 					return ('', '')
-				if (not is_ban_weak(c) and word == None and category == None):
+				if (not is_ban_weak(c)) and (word == None) and (category == None):
 					word = w0.text()
 					category = c
 
-		if (word == None or category == None):
+		if (word == None) or (category == None):
 			return ('', '')
 		else:
 			word = word.lower()
@@ -75,7 +84,7 @@ with open('palavras', 'r') as rfile:
 	for line in rfile:
 		lines.append(line.rstrip())
 
-words = dict(Parallel(n_jobs=120)(delayed(process_word)(line) for line in lines))
+words = dict(Parallel(n_jobs=300)(delayed(process_word)(line) for line in lines))
 
 files = ['numerais', 'pronomes', 'cidades', 'paises', 'pessoas']
 for f0 in files:
@@ -89,6 +98,6 @@ words['balotar'] = 'v.'
 
 with open('megasenha.db', 'w') as wfile:
 	for word, category in sorted(words.items()):
-		if (word != '' and category != ''):
+		if (word != '') and (category != ''):
 			wfile.write(word + ' ' + category + '\n')
 			
